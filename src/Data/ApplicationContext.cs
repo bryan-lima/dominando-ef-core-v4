@@ -24,8 +24,8 @@ namespace EFCore.Tips.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UsuarioFuncao>()
-                        .HasNoKey();
+            //modelBuilder.Entity<UsuarioFuncao>()
+            //            .HasNoKey();
         }
     }
 }

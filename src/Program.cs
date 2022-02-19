@@ -25,7 +25,9 @@ namespace EFCore.Tips
 
             //ToView();
 
-            NaoUnicode();
+            //NaoUnicode();
+
+            OperadoresDeAgregacao();
         }
 
         static void ToQueryString()
@@ -139,6 +141,23 @@ namespace EFCore.Tips
             using ApplicationContext db = new ApplicationContext();
 
             string sql = db.Database.GenerateCreateScript();
+
+            Console.WriteLine(sql);
+        }
+
+        static void OperadoresDeAgregacao()
+        {
+            using ApplicationContext db = new ApplicationContext();
+
+            var sql = db.Departamentos.GroupBy(departamento => departamento.Descricao)
+                                      .Select(departamento => new 
+            {
+                Descricao = departamento.Key,
+                Contador = departamento.Count(),
+                Media = departamento.Average(departamento => departamento.Id),
+                Maximo = departamento.Max(departamento => departamento.Id),
+                Soma = departamento.Sum(departamento => departamento.Id)
+            }).ToQueryString();
 
             Console.WriteLine(sql);
         }

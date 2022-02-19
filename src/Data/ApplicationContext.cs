@@ -13,6 +13,7 @@ namespace EFCore.Tips.Data
     {
         public DbSet<Colaborador> Colaboradores { get; set; }
         public DbSet<Departamento> Departamentos { get; set; }
+        public DbSet<UsuarioFuncao> UsuarioFuncoes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

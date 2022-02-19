@@ -1,4 +1,5 @@
 ﻿using EFCore.Tips.Domain;
+using EFCore.Tips.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
@@ -45,6 +46,8 @@ namespace EFCore.Tips.Data
             {
                 property.SetIsUnicode(false);
             }
+
+            modelBuilder.ToSnakeCaseNames();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EFCore.Tips.Data;
+using EFCore.Tips.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -14,13 +15,13 @@ namespace EFCore.Tips
 
         static void ToQueryString()
         {
-            using var db = new ApplicationContext();
+            using ApplicationContext db = new ApplicationContext();
 
             db.Database.EnsureCreated();
 
-            var query = db.Departamentos.Where(p => p.Id > 2);
+            IQueryable<Departamento> query = db.Departamentos.Where(departamento => departamento.Id > 2);
 
-            var sql = query.ToQueryString();
+            string sql = query.ToQueryString();
 
             Console.WriteLine(sql);
         }

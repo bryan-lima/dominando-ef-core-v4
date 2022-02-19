@@ -23,7 +23,9 @@ namespace EFCore.Tips
 
             //SemChavePrimaria();
 
-            ToView();
+            //ToView();
+
+            NaoUnicode();
         }
 
         static void ToQueryString()
@@ -130,6 +132,15 @@ namespace EFCore.Tips
             {
                 Console.WriteLine($"{departamento.Departamento} [ Colaboradores: {departamento.Colaboradores}]");
             }
+        }
+
+        static void NaoUnicode()
+        {
+            using ApplicationContext db = new ApplicationContext();
+
+            string sql = db.Database.GenerateCreateScript();
+
+            Console.WriteLine(sql);
         }
     }
 }

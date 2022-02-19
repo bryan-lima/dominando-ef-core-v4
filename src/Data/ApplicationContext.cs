@@ -21,5 +21,11 @@ namespace EFCore.Tips.Data
                           .LogTo(Console.WriteLine, LogLevel.Information)
                           .EnableSensitiveDataLogging();
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UsuarioFuncao>()
+                        .HasNoKey();
+        }
     }
 }

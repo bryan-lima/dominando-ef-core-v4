@@ -14,6 +14,7 @@ namespace EFCore.Tips.Data
         public DbSet<Colaborador> Colaboradores { get; set; }
         public DbSet<Departamento> Departamentos { get; set; }
         public DbSet<UsuarioFuncao> UsuarioFuncoes { get; set; }
+        public DbSet<DepartamentoRelatorio> DepartamentoRelatorio { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -26,6 +27,14 @@ namespace EFCore.Tips.Data
         {
             //modelBuilder.Entity<UsuarioFuncao>()
             //            .HasNoKey();
+
+            modelBuilder.Entity<DepartamentoRelatorio>(entity => 
+            {
+                entity.HasNoKey();
+                entity.ToView("vw_departamento_relatorio");
+                entity.Property(departamentoRelatorio => departamentoRelatorio.Departamento)
+                      .HasColumnName("Descricao");
+            });
         }
     }
 }

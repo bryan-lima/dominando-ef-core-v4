@@ -2,6 +2,7 @@
 using EFCore.Tips.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EFCore.Tips
@@ -20,7 +21,9 @@ namespace EFCore.Tips
 
             //SingleOrDefaultVsFirstOrDefault();
 
-            SemChavePrimaria();
+            //SemChavePrimaria();
+
+            ToView();
         }
 
         static void ToQueryString()
@@ -83,6 +86,50 @@ namespace EFCore.Tips
 
             UsuarioFuncao[] usuarioFuncoes = db.UsuarioFuncoes.Where(usuarioFuncao => usuarioFuncao.UsuarioId == Guid.NewGuid())
                                                               .ToArray();
+        }
+
+        static void ToView()
+        {
+            using ApplicationContext db = new ApplicationContext();
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+
+            db.Database.ExecuteSqlRaw(
+                @"CREATE VIEW vw_departamento_relatorio AS
+                SELECT
+                    d.Descricao, count(c.Id) AS Colaboradores
+                FROM Departamentos d
+                LEFT JOIN Colaboradores c ON c.DepartamentoId = d.Id
+                GROUP BY d.Descricao");
+
+            IEnumerable<Departamento> _departamentos = Enumerable.Range(1, 10)
+                                                                 .Select(numeroDepartamento => new Departamento
+                                                                 {
+                                                                     Descricao = $"Departamento {numeroDepartamento}",
+                                                                     Colaboradores = Enumerable.Range(1, numeroDepartamento)
+                                                                                               .Select(numeroColaborador => new Colaborador 
+                                                                                               {
+                                                                                                   Nome = $"Colaborador {numeroDepartamento}-{numeroColaborador}"
+                                                                                               }).ToList()
+                                                                 });
+
+            Departamento _departamento = new Departamento
+            {
+                Descricao = "Departamento Sem Colaborador"
+            };
+
+            db.Departamentos.Add(_departamento);
+            db.Departamentos.AddRange(_departamentos);
+            db.SaveChanges();
+
+            List<DepartamentoRelatorio> relatorio = db.DepartamentoRelatorio.Where(departamentoRelatorio => departamentoRelatorio.Colaboradores < 20)
+                                                                            .OrderBy(departamentoRelatorio => departamentoRelatorio.Departamento)
+                                                                            .ToList();
+
+            foreach (DepartamentoRelatorio departamento in relatorio)
+            {
+                Console.WriteLine($"{departamento.Departamento} [ Colaboradores: {departamento.Colaboradores}]");
+            }
         }
     }
 }

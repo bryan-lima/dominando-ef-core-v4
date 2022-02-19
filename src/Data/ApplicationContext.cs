@@ -1,5 +1,6 @@
 ﻿using EFCore.Tips.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -28,13 +29,22 @@ namespace EFCore.Tips.Data
             //modelBuilder.Entity<UsuarioFuncao>()
             //            .HasNoKey();
 
-            modelBuilder.Entity<DepartamentoRelatorio>(entity => 
+            modelBuilder.Entity<DepartamentoRelatorio>(entity =>
             {
                 entity.HasNoKey();
                 entity.ToView("vw_departamento_relatorio");
                 entity.Property(departamentoRelatorio => departamentoRelatorio.Departamento)
                       .HasColumnName("Descricao");
             });
+
+            IEnumerable<IMutableProperty> properties = modelBuilder.Model.GetEntityTypes()
+                                                                         .SelectMany(type => type.GetProperties())
+                                                                         .Where(property => property.ClrType == typeof(string) && property.GetColumnType() == null);
+
+            foreach (var property in properties)
+            {
+                property.SetIsUnicode(false);
+            }
         }
     }
 }

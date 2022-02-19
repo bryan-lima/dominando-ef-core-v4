@@ -10,7 +10,9 @@ namespace EFCore.Tips
     {
         static void Main(string[] args)
         {
-            ToQueryString();
+            //ToQueryString();
+
+            DebugView();
         }
 
         static void ToQueryString()
@@ -24,6 +26,15 @@ namespace EFCore.Tips
             string sql = query.ToQueryString();
 
             Console.WriteLine(sql);
+        }
+
+        static void DebugView()
+        {
+            using ApplicationContext db = new ApplicationContext();
+
+            db.Departamentos.Add(new Departamento { Descricao = "TESTE DebugView" });
+
+            IQueryable<Departamento> query = db.Departamentos.Where(departamento => departamento.Id > 2);
         }
     }
 }

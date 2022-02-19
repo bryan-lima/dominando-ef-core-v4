@@ -16,7 +16,9 @@ namespace EFCore.Tips
 
             //Clear();
 
-            ConsultaFiltrada();
+            //ConsultaFiltrada();
+
+            SingleOrDefaultVsFirstOrDefault();
         }
 
         static void ToQueryString()
@@ -58,6 +60,17 @@ namespace EFCore.Tips
                                          .ToQueryString();
 
             Console.WriteLine(sql);
+        }
+
+        static void SingleOrDefaultVsFirstOrDefault()
+        {
+            using ApplicationContext db = new ApplicationContext();
+
+            Console.WriteLine("SingleOrDefault:");
+            _ = db.Departamentos.SingleOrDefault(departamento => departamento.Id > 2);
+
+            Console.WriteLine("FirstOrDefault:");
+            _ = db.Departamentos.FirstOrDefault(departamento => departamento.Id > 2);
         }
     }
 }

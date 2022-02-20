@@ -3,6 +3,7 @@ using EFCore.Tips.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace EFCore.Tips
@@ -29,7 +30,9 @@ namespace EFCore.Tips
 
             //OperadoresDeAgregacao();
 
-            OperadoresDeAgregacaoNoAgrupamento();
+            //OperadoresDeAgregacaoNoAgrupamento();
+
+            ContadorDeEventos();
         }
 
         static void ToQueryString()
@@ -177,6 +180,29 @@ namespace EFCore.Tips
                                       }).ToQueryString();
 
             Console.WriteLine(sql);
+        }
+
+        static void ContadorDeEventos()
+        {
+            using ApplicationContext db = new ApplicationContext();
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+
+            Console.WriteLine($" PID: {Process.GetCurrentProcess().Id}");
+
+            while (Console.ReadKey().Key != ConsoleKey.Escape)
+            {
+                Departamento departamento = new Departamento
+                {
+                    Descricao = $"Departamento Sem Colaborador"
+                };
+
+                db.Departamentos.Add(departamento);
+                db.SaveChanges();
+
+                _ = db.Departamentos.Find(1);
+                _ = db.Departamentos.AsNoTracking().FirstOrDefault();
+            }
         }
     }
 }
